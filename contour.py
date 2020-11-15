@@ -35,7 +35,7 @@ def find_contour(img):
 find_contour(imgCanny)
 
 cv.imshow("img", img)
-# cv.imshow("imgGrey", imgGrey)
+cv.imshow("imgGrey", imgGrey)
 cv.imshow("imgBlur", imgBlur)
 # cv.imshow("imgCanny", imgCanny)
 cv.imshow("imgContour", imgCopy)

@@ -1,21 +1,22 @@
 import cv2 as cv
 import numpy as np
+from pixelate import pixelate
 # read file
 img = cv.imread("resources/matrix1.jpeg")
 
 
 # define kernel
-kernel = np.ones((5,5), np.uint8)
+kernel = np.ones((15,15), np.uint8)
 
 # color manipulation
 imgGrey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # apply filer
-imgBlur = cv.GaussianBlur(imgGrey, (9,9),0)
+imgBlur = cv.GaussianBlur(imgGrey, (9,9),10)
 imgCanny = cv.Canny(imgGrey, 100, 100)
 
 # apply filer with kernel (matrix)
-imgDialation = cv.dilate(imgCanny, kernel, iterations=1)
+imgDialation = cv.dilate(imgBlur, kernel, iterations=1)
 imgEroded = cv.erode(imgDialation, kernel, iterations=1)
 
 # Resizing
@@ -33,13 +34,22 @@ imgTransform = cv.warpPerspective(imgGrey, linearTransform, (width, height))
 # Stack images
 imgStack = np.hstack((imgEroded, imgDialation))
 
+
+# pixelate
+# pixelate(imgGrey, 32, 32)
+# pixelate(imgBlur, 32, 32)
+# pixelate(imgCanny, 32, 32)
+# pixelate(imgDialation, 32, 32)
+# pixelate(imgEroded, 32, 32)
+
+
 # show
-# cv.imshow("imgGrey", imgGrey)
-# cv.imshow("imgBlur", imgBlur)
-# cv.imshow("imgCanny", imgCanny)
-# cv.imshow("imgDialation", imgDialation)
-# cv.imshow("imgEroded", imgEroded)
-# cv.imshow("imgResize", imgRezised)
+cv.imshow("imgGrey", imgGrey)
+cv.imshow("imgBlur", imgBlur)
+cv.imshow("imgCanny", imgCanny)
+cv.imshow("imgDialation", imgDialation)
+cv.imshow("imgEroded", imgEroded)
+cv.imshow("imgResize", imgRezised)
 cv.imshow("imgTransform", imgTransform)
-cv.imshow("imgStack", imgStack)
-cv.waitKey(0)
+# cv.imshow("imgStack", imgStack)
+cv.waitKey(50000)
