@@ -1,4 +1,5 @@
 import cv2 as cv
+import numpy as np
 
 # read file
 img = cv.imread("resources/matrix1.jpeg")
@@ -11,10 +12,15 @@ imgGrey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 # Blurr the image
 imgBlur = cv.GaussianBlur(imgGrey, (7,7),1)
 # Blurr the image
-imgBlur = cv.GaussianBlur(imgGrey, (7,7),1)
+# imgBlur = cv.GaussianBlur(imgGrey, (7,7),1)
+
+kernel = np.ones((15,15), np.uint8)
+imgEroded = cv.erode(imgBlur, kernel, iterations=2)
+imgDialation = cv.dilate(imgEroded, kernel, iterations=2)
+imgCanny = cv.Canny(imgDialation, 50, 50 )
 
 # Canny image
-imgCanny = cv.Canny(imgBlur, 50, 50 )
+# imgCanny = cv.Canny(imgBlur, 50, 50 )
 
 
 # Get contour
@@ -37,7 +43,7 @@ find_contour(imgCanny)
 cv.imshow("img", img)
 cv.imshow("imgGrey", imgGrey)
 cv.imshow("imgBlur", imgBlur)
-# cv.imshow("imgCanny", imgCanny)
+cv.imshow("imgCanny", imgCanny)
 cv.imshow("imgContour", imgCopy)
 
-cv.waitKey(15000)
+cv.waitKey(0)

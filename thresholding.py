@@ -20,8 +20,8 @@ cv2.imshow("Pixelate 1", img)
 img = cv2.GaussianBlur(img, (25,25),10)
 cv2.imshow("Blurr2", img)
 
-# img = pixelate(img, 15, 15)
-# cv2.imshow("Pixelate 2", img)
+img = pixelate(img, 15, 15)
+cv2.imshow("Pixelate 2", img)
 
 # img = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,5,1)
 # cv2.imshow("Adaptive Threshold", img)
