@@ -1,49 +1,25 @@
 import cv2 as cv
-import numpy as np
 
-# read file
-img = cv.imread("resources/matrix1.jpeg")
-imgCopy = img.copy()
-
-## preprocessing
-# convert to grey scale
-imgGrey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-
-# Blurr the image
-imgBlur = cv.GaussianBlur(imgGrey, (7,7),1)
-# Blurr the image
-# imgBlur = cv.GaussianBlur(imgGrey, (7,7),1)
-
-kernel = np.ones((15,15), np.uint8)
-imgEroded = cv.erode(imgBlur, kernel, iterations=2)
-imgDialation = cv.dilate(imgEroded, kernel, iterations=2)
-imgCanny = cv.Canny(imgDialation, 50, 50 )
-
-# Canny image
-# imgCanny = cv.Canny(imgBlur, 50, 50 )
-
-
-# Get contour
-def find_contour(img):
+def find_contour(img, img2):
+    """
+    Take in a (Canny) image, find conture and return a new image with contour and bounding
+    boxes around digit
+    :param img: Canny Image
+    :param img2: Original Image
+    :return: Original Image with Bounding Box
+    """
+    imgCopy = img2.copy()
     contours, hierarchy = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+    crop_anchors = []
     for contour in contours:
         area = cv.contourArea(contour)
         # give threshold of area to avoid noise
         if area > 20:
-            cv.drawContours(imgCopy, contour, -1 , (255, 0, 0), 3)
-            peri = cv.arcLength(contour, True)
-            appro = cv.approxPolyDP(contour, 0.02*peri, True)
+            # cv.drawContours(imgCopy, contour, -1 , (255, 0, 0), 1)
+            peri = cv.arcLength(contour, False)
+            appro = cv.approxPolyDP(contour, 0.0002*peri, True)
             x,y,width, height = cv.boundingRect(appro)
             # draw bounding box
-            cv.rectangle(imgCopy, (x,y), (x+width, y+height), (0,255,0), thickness=1)
-
-# find contours and draw bounding boxes
-find_contour(imgCanny)
-
-cv.imshow("img", img)
-cv.imshow("imgGrey", imgGrey)
-cv.imshow("imgBlur", imgBlur)
-cv.imshow("imgCanny", imgCanny)
-cv.imshow("imgContour", imgCopy)
-
-cv.waitKey(0)
+            cv.rectangle(imgCopy, (x-5,y-5), (x+width+5, y+height+5), (0,255,0), thickness=1)
+            crop_anchors.append(((y-5,y+height+5),(x-5,x+width+5)))
+    return imgCopy, crop_anchors
